@@ -15,7 +15,7 @@ class ConfigSetting extends Setting<ConfigSetting> {
   ConfigSetting._();
   static final ConfigSetting _appSetting = ConfigSetting._();
   @HiveField(0)
-  RxBool addMethod = true.obs;
+  RxBool addMethod = false.obs;
   @HiveField(1)
   int column1Width = 2;
 

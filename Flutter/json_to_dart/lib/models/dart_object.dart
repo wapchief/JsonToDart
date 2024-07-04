@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:json_to_dart/main_controller.dart';
 import 'package:json_to_dart/models/config.dart';
@@ -27,13 +28,12 @@ class DartObject extends DartProperty {
           nullable: nullable,
           dartObject: dartObject,
         ) {
-    classNameTextEditingController =
-        ClassNameCheckerTextEditingController(this);
+    classNameTextEditingController = ClassNameCheckerTextEditingController(this);
 
     properties = <DartProperty>[];
     objectKeys = <String, DartObject>{};
-    _jObject = (this.keyValuePair.value as Map<String, dynamic>).map(
-        (String key, dynamic value) => MapEntry<String, _InnerObject>(
+    _jObject = (this.keyValuePair.value as Map<String, dynamic>).map((String key, dynamic value) =>
+        MapEntry<String, _InnerObject>(
             key,
             _InnerObject(
                 data: value,
@@ -58,8 +58,7 @@ class DartObject extends DartProperty {
   Map<String, _InnerObject>? _jObject;
   Map<String, _InnerObject>? _mergeObject;
 
-  Map<String, _InnerObject>? get jObject =>
-      _mergeObject != null ? _mergeObject! : _jObject;
+  Map<String, _InnerObject>? get jObject => _mergeObject != null ? _mergeObject! : _jObject;
 
   late DuplicateClassChecker duplicateClassChecker;
 
@@ -90,12 +89,11 @@ class DartObject extends DartProperty {
 
   void initializePropertyItem(MapEntry<String, _InnerObject> item, int depth,
       {bool addProperty = true}) {
-    if (item.value.data is Map &&
-        (item.value.data as Map<String, dynamic>).isNotEmpty) {
+    if (item.value.data is Map && (item.value.data as Map<String, dynamic>).isNotEmpty) {
       if (objectKeys.containsKey(item.key)) {
         final DartObject temp = objectKeys[item.key]!;
-        temp.merge((item.value.data as Map<String, dynamic>).map(
-            (String key, dynamic value) => MapEntry<String, _InnerObject>(
+        temp.merge((item.value.data as Map<String, dynamic>).map((String key, dynamic value) =>
+            MapEntry<String, _InnerObject>(
                 key,
                 _InnerObject(
                     data: value,
@@ -138,8 +136,8 @@ class DartObject extends DartProperty {
                   _InnerObject(
                       data: arrayItem,
                       type: DartHelper.converDartType(arrayItem.runtimeType),
-                      nullable: DartHelper.converNullable(value) &&
-                          ConfigSetting().smartNullable.value)),
+                      nullable:
+                          DartHelper.converNullable(value) && ConfigSetting().smartNullable.value)),
               depth,
               addProperty: false);
         }
@@ -173,13 +171,10 @@ class DartObject extends DartProperty {
         _mergeObject ??= <String, _InnerObject>{};
 
         if (ConfigSetting().smartNullable.value) {
-          for (final MapEntry<String, _InnerObject> existObject
-              in _mergeObject!.entries) {
+          for (final MapEntry<String, _InnerObject> existObject in _mergeObject!.entries) {
             if (!other.containsKey(existObject.key)) {
               final _InnerObject newObject = _InnerObject(
-                  data: existObject.value.data,
-                  type: existObject.value.type,
-                  nullable: true);
+                  data: existObject.value.data, type: existObject.value.type, nullable: true);
               _mergeObject![existObject.key] = newObject;
               needInitialize = true;
             }
@@ -189,8 +184,8 @@ class DartObject extends DartProperty {
         for (final MapEntry<String, _InnerObject> item in other.entries) {
           if (!_mergeObject!.containsKey(item.key)) {
             needInitialize = true;
-            _mergeObject![item.key] = _InnerObject(
-                data: item.value.data, type: item.value.type, nullable: true);
+            _mergeObject![item.key] =
+                _InnerObject(data: item.value.data, type: item.value.type, nullable: true);
           } else {
             _InnerObject existObject = _mergeObject![item.key]!;
             if ((existObject.isNull && !item.value.isNull) ||
@@ -198,9 +193,7 @@ class DartObject extends DartProperty {
                 existObject.nullable != item.value.nullable) {
               existObject = _InnerObject(
                   data: item.value.data ?? existObject.data,
-                  type: item.value.type != DartType.Null
-                      ? item.value.type
-                      : existObject.type,
+                  type: item.value.type != DartType.Null ? item.value.type : existObject.type,
                   nullable: (existObject.nullable || item.value.nullable) &&
                       ConfigSetting().smartNullable.value);
               _mergeObject![item.key] = existObject;
@@ -211,8 +204,7 @@ class DartObject extends DartProperty {
                     // make sure Object will be merge
                     (existObject.isObject || item.value.isObject))) {
               existObject = _InnerObject(
-                data: (item.value.data as List<dynamic>)
-                  ..addAll(existObject.data as List<dynamic>),
+                data: (item.value.data as List<dynamic>)..addAll(existObject.data as List<dynamic>),
                 type: item.value.type,
                 nullable: false,
               );
@@ -272,15 +264,14 @@ class DartObject extends DartProperty {
   }
 
   void orderPropeties() {
-    final PropertyNameSortingType sortingType =
-        ConfigSetting().propertyNameSortingType.value;
+    final PropertyNameSortingType sortingType = ConfigSetting().propertyNameSortingType.value;
     if (sortingType != PropertyNameSortingType.none) {
       if (sortingType == PropertyNameSortingType.ascending) {
-        properties.sort((DartProperty left, DartProperty right) =>
-            left.name.compareTo(right.name.value));
+        properties
+            .sort((DartProperty left, DartProperty right) => left.name.compareTo(right.name.value));
       } else {
-        properties.sort((DartProperty left, DartProperty right) =>
-            right.name.compareTo(left.name.value));
+        properties
+            .sort((DartProperty left, DartProperty right) => right.name.compareTo(left.name.value));
       }
     }
 
@@ -303,8 +294,7 @@ class DartObject extends DartProperty {
 
     final MyStringBuffer sb = MyStringBuffer();
 
-    sb.writeLine(
-        stringFormat(DartHelper.classHeader, <String>[className.value]));
+    sb.writeLine(stringFormat(DartHelper.classHeader, <String>[className.value]));
 
     if (properties.isNotEmpty) {
       final MyStringBuffer factorySb = MyStringBuffer();
@@ -318,10 +308,8 @@ class DartObject extends DartProperty {
 
       final MyStringBuffer copySb = MyStringBuffer();
 
-      final bool isAllFinalProperties = !properties.any(
-          (DartProperty element) =>
-              element.propertyAccessorType.value !=
-              PropertyAccessorType.final_);
+      final bool isAllFinalProperties = !properties.any((DartProperty element) =>
+          element.propertyAccessorType.value != PropertyAccessorType.final_);
 
       factorySb.writeLine(stringFormat(DartHelper.factoryStringHeader,
           <String>['${isAllFinalProperties ? 'const' : ''} $className']));
@@ -329,8 +317,7 @@ class DartObject extends DartProperty {
       toJsonSb.writeLine(DartHelper.toJsonHeader);
 
       for (final DartProperty item in properties) {
-        final String lowName =
-            item.name.substring(0, 1).toLowerCase() + item.name.substring(1);
+        final String lowName = item.name.substring(0, 1).toLowerCase() + item.name.substring(1);
         final String name = item.name.value;
         String? className;
         String? typeString;
@@ -375,17 +362,29 @@ class DartObject extends DartProperty {
           typeString = item.getTypeString(className: className);
 
           typeString = typeString.replaceAll('?', '');
+          debugPrint('item:${item.key},${item.value},$className,$typeString');
+          var result;
+          if(typeString.contains('$className')){
+            result = '''
+          asListT<$className>(json['$lowName'],fromJson:(Map<String, dynamic> item)=>$className.fromJson(item))
+          ''';
+          }else if(typeString.contains('int')){
+            result = '''asListT<int>(json['${item.key}'])''';
+          }else if(typeString.contains('String')){
+            result = '''asListT<String>(json['${item.key}'])''';
+          }else if(typeString.contains('double')){
+            result = '''asListT<double>(json['${item.key}'])''';
+          }
+          // fromJsonSb1.writeLine(item.getArraySetPropertyString(
+          //   lowName,
+          //   typeString,
+          //   className: className,
+          //   baseType: item
+          //       .getBaseTypeString(className: className)
+          //       .replaceAll('?', ''),
+          // ));
 
-          fromJsonSb1.writeLine(item.getArraySetPropertyString(
-            lowName,
-            typeString,
-            className: className,
-            baseType: item
-                .getBaseTypeString(className: className)
-                .replaceAll('?', ''),
-          ));
-
-          setString = ' ${item.name}:$lowName';
+          setString = ' ${item.name}:$result';
 
           if (ConfigSetting().nullsafety.value) {
             if (item.nullable) {
@@ -398,8 +397,7 @@ class DartObject extends DartProperty {
           if (ConfigSetting().addCopyMethod.value)
             copyProperty = item.getListCopy(className: className);
         } else {
-          setString = DartHelper.setProperty(
-              item.name.value, item, this.className.value);
+          setString = DartHelper.setProperty(item.name.value, item, this.className.value);
           typeString = DartHelper.getDartTypeString(item.type.value, item);
         }
 
@@ -415,8 +413,7 @@ class DartObject extends DartProperty {
           factorySb.writeLine(stringFormat(fss, <String>[item.name.value]));
         }
 
-        propertySb.writeLine(stringFormat(
-            DartHelper.propertyS(item.propertyAccessorType.value),
+        propertySb.writeLine(stringFormat(DartHelper.propertyS(item.propertyAccessorType.value),
             <String>[typeString, name, lowName]));
         fromJsonSb.writeLine(setString);
 
@@ -447,8 +444,7 @@ class DartObject extends DartProperty {
           item.key,
           setName,
         ]));
-        if (ConfigSetting().addCopyMethod.value)
-          copySb.writeLine('${item.name}:$copyProperty,');
+        if (ConfigSetting().addCopyMethod.value) copySb.writeLine('${item.name}:$copyProperty,');
       }
 
       if (factorySb1.length == 0) {
@@ -466,8 +462,8 @@ class DartObject extends DartProperty {
                     : DartHelper.fromJsonHeader1,
                 <String>[className.value]) +
             fromJsonSb1.toString() +
-            stringFormat(DartHelper.fromJsonFooter1,
-                <String>[className.value, fromJsonSb.toString()]);
+            stringFormat(
+                DartHelper.fromJsonFooter1, <String>[className.value, fromJsonSb.toString()]);
       } else {
         fromJson = stringFormat(
                 ConfigSetting().nullsafety.value
@@ -522,18 +518,24 @@ class _InnerObject {
     required this.type,
     required this.nullable,
   });
+
   final dynamic data;
   final DartType type;
+
   // data is null ?
   final bool nullable;
 
   bool get isList => data is List;
+
   bool get isEmpty => isList && (data as List<dynamic>).isEmpty;
+
   bool get isNull => type.isNull;
+
   bool get isObject => type == DartType.Object;
 }
 
 class CheckError implements Exception {
   CheckError(this.msg);
+
   final String msg;
 }

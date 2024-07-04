@@ -170,7 +170,7 @@ class MainController extends GetxController {
           sb.writeLine(info);
         }
 
-        sb.writeLine(DartHelper.jsonImport);
+        // sb.writeLine(DartHelper.jsonImport);
 
         if (ConfigSetting().addMethod.value) {
           if (ConfigSetting().enableArrayProtection.value) {

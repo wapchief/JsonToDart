@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:get/get.dart';
 
@@ -62,6 +63,7 @@ class DartProperty extends Equatable {
 
   bool get hasPropertyError => propertyError.isNotEmpty;
   late EmptyErrorChecker emptyErrorChecker;
+
   void updateError(RxString input) {
     if (!ConfigSetting().automaticCheck.value) {
       emptyErrorChecker.checkError(input);
@@ -131,8 +133,7 @@ class DartProperty extends Equatable {
       ]);
     }
 
-    return result ??
-        (className ?? DartHelper.getDartTypeString(type.value, this));
+    return result ?? (className ?? DartHelper.getDartTypeString(type.value, this));
   }
 
   String getListCopy({String? className}) {
@@ -145,8 +146,7 @@ class DartProperty extends Equatable {
 
     while (temp is List && temp.isNotEmpty) {
       if (copy == '') {
-        copy =
-            'e.map(($type e) => ${className != null ? 'e.copy()' : 'e'}).toList()';
+        copy = 'e.map(($type e) => ${className != null ? 'e.copy()' : 'e'}).toList()';
       } else {
         type = 'List<$type>';
         copy = 'e.map(($type e)=> $copy).toList()';
@@ -161,8 +161,7 @@ class DartProperty extends Equatable {
     //     '${ConfigSetting().nullsafety && !nullable ? name : name + '?'}.map(($type e)=> $copy)$toList';
     copy = stringFormat(copy, <String>[
       className ??
-          DartHelper.getDartTypeString(
-                  DartHelper.converDartType(temp?.runtimeType ?? Object), this)
+          DartHelper.getDartTypeString(DartHelper.converDartType(temp?.runtimeType ?? Object), this)
               .replaceAll('?', '')
     ]);
     copy = copy.replaceFirst(
@@ -171,8 +170,7 @@ class DartProperty extends Equatable {
     );
 
     if (!ConfigSetting().nullsafety.value) {
-      copy = copy.replaceRange(
-          copy.length - '.toList()'.length, null, '?.toList()');
+      copy = copy.replaceRange(copy.length - '.toList()'.length, null, '?.toList()');
     }
     return copy;
   }
@@ -205,6 +203,8 @@ class DartProperty extends Equatable {
     final String nonNullable = ConfigSetting().nullsafety.value ? '!' : '';
     int count = 0;
     String? result;
+    // -----optionList,List<OptionList>,OptionList,OptionList,
+    debugPrint('-----${setName},$typeString,$className,$baseType,$temp');
     while (temp is List) {
       if (temp.isNotEmpty) {
         temp = temp.first;
@@ -232,8 +232,7 @@ class DartProperty extends Equatable {
         String item = 'item' + (count == 0 ? '' : count.toString());
         String addString = '';
         if (className != null) {
-          item =
-              '$className.fromJson(asT<Map<String,dynamic>>($item)$nonNullable)';
+          item = '$className.fromJson(asT<Map<String,dynamic>>($item)$nonNullable)';
         } else {
           item = DartHelper.getUseAsT(baseType, item);
         }
@@ -260,7 +259,8 @@ class DartProperty extends Equatable {
 
       count++;
     }
-
+    // result = 'asListT<$typeString>($temp,fromJson:(json)=>$typeString.fromJson(json)';
+    debugPrint('$result');
     sb.writeLine(result);
     sb.writeLine('    }\n');
 
